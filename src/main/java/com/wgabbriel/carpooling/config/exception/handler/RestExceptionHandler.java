@@ -6,6 +6,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.wgabbriel.carpooling.config.exception.custom.FieldAlreadyRegisteredException;
+
 @RestControllerAdvice
 public class RestExceptionHandler {
 
@@ -24,4 +26,10 @@ public class RestExceptionHandler {
     return ResponseEntity.status(400)
         .body(e.getAllErrors().get(0).getDefaultMessage());
   }
+
+  @ExceptionHandler(FieldAlreadyRegisteredException.class)
+  public ResponseEntity<String> handleFieldAlreadyRegisteredException(FieldAlreadyRegisteredException e) {
+    return ResponseEntity.status(409).body(e.getMessage());
+  }
+  
 }
