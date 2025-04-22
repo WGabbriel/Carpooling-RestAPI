@@ -19,7 +19,7 @@ import com.wgabbriel.carpooling.service.RideService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/ride")
+@RequestMapping("/api/v1/driver/ride")
 public class RideController {
 
   private final RideService rideService;
