@@ -14,46 +14,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wgabbriel.carpooling.entity.Ride;
-import com.wgabbriel.carpooling.service.RideService;
+import com.wgabbriel.carpooling.service.DriverRideService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/driver/ride")
-public class RideController {
+public class DriverRideController {
 
-  private final RideService rideService;
+  private final DriverRideService driverRideService;
 
-  public RideController(RideService rideService) {
-    this.rideService = rideService;
+  public DriverRideController(DriverRideService driverRideService) {
+    this.driverRideService = driverRideService;
   }
 
   @GetMapping("")
   public ResponseEntity<List<Ride>> getAllRides() {
-    return ResponseEntity.status(200).body(rideService.findAll());
+    return ResponseEntity.status(200).body(driverRideService.findAll());
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<Ride> getRideById(@PathVariable UUID id) {
 
-    return ResponseEntity.status(200).body(rideService.findById(id));
+    return ResponseEntity.status(200).body(driverRideService.findById(id));
   }
 
   @PostMapping("")
   public ResponseEntity<Ride> createRide(@RequestBody @Valid Ride ride) {
-    return ResponseEntity.status(201).body(rideService.create(ride));
+    return ResponseEntity.status(201).body(driverRideService.create(ride));
   }
 
   @PatchMapping("/{id}")
   public ResponseEntity<Ride> updateRide(@PathVariable UUID id, @RequestBody Ride ride) {
 
-    return ResponseEntity.status(200).body(rideService.update(id, ride));
+    return ResponseEntity.status(200).body(driverRideService.update(id, ride));
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteRide(@PathVariable UUID id) {
 
-    rideService.delete(id);
+    driverRideService.delete(id);
     return ResponseEntity.status(204).build();
   }
 

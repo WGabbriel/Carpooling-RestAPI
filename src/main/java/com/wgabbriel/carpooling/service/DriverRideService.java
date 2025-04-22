@@ -9,14 +9,14 @@ import com.wgabbriel.carpooling.config.exception.custom.NotAllowedDriver;
 import com.wgabbriel.carpooling.config.exception.custom.RideNotFoundException;
 import com.wgabbriel.carpooling.entity.Ride;
 import com.wgabbriel.carpooling.entity.User;
-import com.wgabbriel.carpooling.enums.RideStatus;
+import com.wgabbriel.carpooling.enums.DriverRideStatus;
 import com.wgabbriel.carpooling.repository.RideRepository;
 import com.wgabbriel.carpooling.repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
-public class RideService {
+public class DriverRideService {
 
   private final RideRepository rideRepository;
   private final HttpServletRequest request;
@@ -24,7 +24,7 @@ public class RideService {
 
   private final UserRepository userRepository;
 
-  public RideService(RideRepository rideRepository, HttpServletRequest request, TokenService tokenService,
+  public DriverRideService(RideRepository rideRepository, HttpServletRequest request, TokenService tokenService,
       UserRepository userRepository) {
     this.rideRepository = rideRepository;
     this.request = request;
@@ -35,7 +35,7 @@ public class RideService {
   public Ride create(Ride ride) {
 
     ride.setDriver(getDriverByToken());
-    ride.setStatus(RideStatus.OPEN);
+    ride.setStatus(DriverRideStatus.OPEN);
     return rideRepository.save(ride);
   }
 
@@ -68,7 +68,7 @@ public class RideService {
       throw new NotAllowedDriver("You are not allowed to update this ride");
     }
 
-    if (rideToUpdate.getStatus() == RideStatus.COMPLETED) {
+    if (rideToUpdate.getStatus() == DriverRideStatus.COMPLETED) {
       throw new NotAllowedDriver("You are not allowed to update this ride");
     }
 
@@ -100,7 +100,7 @@ public class RideService {
     var ride = rideRepository.findById(id).orElseThrow(() -> new RideNotFoundException("Ride not found"));
 
     if (!ride.getDriver().getId().equals(driver)
-        || ride.getStatus().equals(RideStatus.COMPLETED)) {
+        || ride.getStatus().equals(DriverRideStatus.COMPLETED)) {
       throw new NotAllowedDriver("You are not allowed to delete this ride");
     }
 

@@ -1,12 +1,12 @@
 package com.wgabbriel.carpooling.enums;
 
-public enum RideStatus {
+public enum DriverRideStatus {
   OPEN("OPEN"),
   COMPLETED("COMPLETED");
 
   private String status;
 
-  RideStatus(String status) {
+  DriverRideStatus(String status) {
     this.status = status;
   }
 
