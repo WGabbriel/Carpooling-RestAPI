@@ -1,6 +1,7 @@
 package com.wgabbriel.carpooling.entity;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -50,8 +51,12 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return null;
 
+    if (this.role == UserRole.Passenger) {
+      return List.of(() -> "ROLE_PASSENGER");
+    }
+
+    return List.of(() -> "ROLE_DRIVER");
   }
 
   @Override
