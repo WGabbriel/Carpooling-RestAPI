@@ -30,7 +30,8 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.POST, "/api/v1/auth/*").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/v1/rides").hasRole("DRIVER")
+            .requestMatchers("/api/v1/ride").hasRole("DRIVER")
+            .requestMatchers("/api/v1/ride/*").hasRole("DRIVER")
             .anyRequest()
             .authenticated())
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
