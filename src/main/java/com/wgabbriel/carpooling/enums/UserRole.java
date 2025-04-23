@@ -1,8 +1,8 @@
 package com.wgabbriel.carpooling.enums;
 
 public enum UserRole {
-  Driver("driver"),
-  Passenger("passenger");
+  DRIVER("DRIVER"),
+  PASSENGER("PASSENGER");
 
   private String role;
 
