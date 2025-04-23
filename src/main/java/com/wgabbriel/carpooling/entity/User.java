@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.wgabbriel.carpooling.enums.UserRole;
@@ -49,6 +50,8 @@ public class User implements UserDetails {
   @Column(name = "user_role")
   private UserRole role;
 
+  private boolean isEnabled;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -60,12 +63,15 @@ public class User implements UserDetails {
       default:
         throw new IllegalStateException("Unexpected role: " + this.role);
     }
-
-    return List.of(() -> "ROLE_DRIVER");
   }
 
   @Override
   public String getUsername() {
     return email;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return this.isEnabled;
   }
 }

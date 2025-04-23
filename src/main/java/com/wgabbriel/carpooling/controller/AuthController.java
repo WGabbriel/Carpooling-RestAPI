@@ -49,6 +49,7 @@ public class AuthController {
     }
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
+    user.setEnabled(true);
     return ResponseEntity.status(201).body(userRepository.save(user));
   }
 
