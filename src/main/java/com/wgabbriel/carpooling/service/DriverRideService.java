@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.wgabbriel.carpooling.config.exception.custom.NotAllowedDriver;
+import com.wgabbriel.carpooling.config.exception.custom.ActionNotAllowedException;
 import com.wgabbriel.carpooling.config.exception.custom.RideNotFoundException;
 import com.wgabbriel.carpooling.entity.Ride;
 import com.wgabbriel.carpooling.entity.User;
@@ -45,7 +45,7 @@ public class DriverRideService {
     var ride = rideRepository.findById(id).orElseThrow(() -> new RideNotFoundException("Ride not found"));
 
     if (!ride.getDriver().getId().equals(driver.getId())) {
-      throw new NotAllowedDriver("You are not allowed to get this ride");
+      throw new ActionNotAllowedException("You are not allowed to get this ride");
     }
 
     return ride;
@@ -65,11 +65,11 @@ public class DriverRideService {
         .orElseThrow(() -> new RideNotFoundException("Ride not found"));
 
     if (!rideToUpdate.getDriver().getId().equals(driver.getId())) {
-      throw new NotAllowedDriver("You are not allowed to update this ride");
+      throw new ActionNotAllowedException("You are not allowed to update this ride");
     }
 
     if (rideToUpdate.getStatus() == DriverRideStatus.COMPLETED) {
-      throw new NotAllowedDriver("You are not allowed to update this ride");
+      throw new ActionNotAllowedException("You are not allowed to update this ride");
     }
 
     if (ride.getPassengers() != null) {
@@ -101,7 +101,7 @@ public class DriverRideService {
 
     if (!ride.getDriver().getId().equals(driver)
         || ride.getStatus().equals(DriverRideStatus.COMPLETED)) {
-      throw new NotAllowedDriver("You are not allowed to delete this ride");
+      throw new ActionNotAllowedException("You are not allowed to delete this ride");
     }
 
     rideRepository.delete(ride);
