@@ -52,8 +52,13 @@ public class User implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
 
-    if (this.role == UserRole.Passenger) {
-      return List.of(() -> "ROLE_PASSENGER");
+    switch (this.role) {
+      case DRIVER:
+        return List.of(new SimpleGrantedAuthority("ROLE_DRIVER"), new SimpleGrantedAuthority("ROLE_PASSENGER"));
+      case PASSENGER:
+        return List.of(new SimpleGrantedAuthority("ROLE_PASSENGER"));
+      default:
+        throw new IllegalStateException("Unexpected role: " + this.role);
     }
 
     return List.of(() -> "ROLE_DRIVER");
