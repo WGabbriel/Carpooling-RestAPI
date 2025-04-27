@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.wgabbriel.carpooling.config.exception.custom.FieldAlreadyRegisteredException;
 import com.wgabbriel.carpooling.config.exception.custom.ActionNotAllowedException;
-import com.wgabbriel.carpooling.config.exception.custom.RideNotFoundException;
+import com.wgabbriel.carpooling.config.exception.custom.NotFoundException;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
@@ -39,8 +39,8 @@ public class RestExceptionHandler {
     return ResponseEntity.status(403).body(e.getMessage());
   }
 
-  @ExceptionHandler(RideNotFoundException.class)
-  public ResponseEntity<String> handleRideNotFoundException(RideNotFoundException e) {
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<String> handleNotFoundException(NotFoundException e) {
     return ResponseEntity.status(404).body(e.getMessage());
   }
 }
