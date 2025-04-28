@@ -44,7 +44,6 @@ public class User implements UserDetails {
 
   @Column(unique = true)
   @NotBlank(message = "Phone should not be blank")
-
   private String phone;
 
   @Column(name = "user_role")
