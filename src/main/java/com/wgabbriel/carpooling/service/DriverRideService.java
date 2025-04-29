@@ -6,43 +6,33 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.wgabbriel.carpooling.config.exception.custom.ActionNotAllowedException;
-import com.wgabbriel.carpooling.config.exception.custom.RideNotFoundException;
+import com.wgabbriel.carpooling.config.exception.custom.NotFoundException;
 import com.wgabbriel.carpooling.entity.Ride;
-import com.wgabbriel.carpooling.entity.User;
 import com.wgabbriel.carpooling.enums.DriverRideStatus;
 import com.wgabbriel.carpooling.repository.RideRepository;
-import com.wgabbriel.carpooling.repository.UserRepository;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class DriverRideService {
 
   private final RideRepository rideRepository;
-  private final HttpServletRequest request;
-  private final TokenService tokenService;
+  private final AuthService authService;
 
-  private final UserRepository userRepository;
-
-  public DriverRideService(RideRepository rideRepository, HttpServletRequest request, TokenService tokenService,
-      UserRepository userRepository) {
+  public DriverRideService(RideRepository rideRepository, AuthService authService) {
     this.rideRepository = rideRepository;
-    this.request = request;
-    this.tokenService = tokenService;
-    this.userRepository = userRepository;
+    this.authService = authService;
   }
 
   public Ride create(Ride ride) {
 
-    ride.setDriver(getDriverByToken());
+    ride.setDriver(authService.getUserByToken());
     ride.setStatus(DriverRideStatus.OPEN);
     return rideRepository.save(ride);
   }
 
   public Ride findById(UUID id) {
 
-    var driver = getDriverByToken();
-    var ride = rideRepository.findById(id).orElseThrow(() -> new RideNotFoundException("Ride not found"));
+    var driver = authService.getUserByToken();
+    var ride = rideRepository.findById(id).orElseThrow(() -> new NotFoundException("Ride not found"));
 
     if (!ride.getDriver().getId().equals(driver.getId())) {
       throw new ActionNotAllowedException("You are not allowed to get this ride");
@@ -53,16 +43,16 @@ public class DriverRideService {
 
   public List<Ride> findAll() {
 
-    var driver = getDriverByToken().getId();
+    var driver = authService.getUserByToken().getId();
 
     return rideRepository.findAllByDriverId(driver);
   }
 
   public Ride update(UUID id, Ride ride) {
 
-    var driver = getDriverByToken();
+    var driver = authService.getUserByToken();
     var rideToUpdate = rideRepository.findById(id)
-        .orElseThrow(() -> new RideNotFoundException("Ride not found"));
+        .orElseThrow(() -> new NotFoundException("Ride not found"));
 
     if (!rideToUpdate.getDriver().getId().equals(driver.getId())) {
       throw new ActionNotAllowedException("You are not allowed to update this ride");
@@ -96,8 +86,8 @@ public class DriverRideService {
 
   public void delete(UUID id) {
 
-    var driver = getDriverByToken().getId();
-    var ride = rideRepository.findById(id).orElseThrow(() -> new RideNotFoundException("Ride not found"));
+    var driver = authService.getUserByToken().getId();
+    var ride = rideRepository.findById(id).orElseThrow(() -> new NotFoundException("Ride not found"));
 
     if (!ride.getDriver().getId().equals(driver)
         || ride.getStatus().equals(DriverRideStatus.COMPLETED)) {
@@ -105,14 +95,6 @@ public class DriverRideService {
     }
 
     rideRepository.delete(ride);
-  }
-
-  private User getDriverByToken() {
-
-    var token = request.getHeader("Authorization").replace("Bearer ", "");
-    var user = userRepository
-        .findByEmail(tokenService.validateToken(token)).get();
-    return user;
   }
 
   // public void autoCompleteRides

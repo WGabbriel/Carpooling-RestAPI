@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.wgabbriel.carpooling.enums.UserRole;
@@ -43,24 +44,33 @@ public class User implements UserDetails {
 
   @Column(unique = true)
   @NotBlank(message = "Phone should not be blank")
-
   private String phone;
 
   @Column(name = "user_role")
   private UserRole role;
 
+  private boolean isEnabled;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
 
-    if (this.role == UserRole.Passenger) {
-      return List.of(() -> "ROLE_PASSENGER");
+    switch (this.role) {
+      case DRIVER:
+        return List.of(new SimpleGrantedAuthority("ROLE_DRIVER"), new SimpleGrantedAuthority("ROLE_PASSENGER"));
+      case PASSENGER:
+        return List.of(new SimpleGrantedAuthority("ROLE_PASSENGER"));
+      default:
+        throw new IllegalStateException("Unexpected role: " + this.role);
     }
-
-    return List.of(() -> "ROLE_DRIVER");
   }
 
   @Override
   public String getUsername() {
     return email;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return this.isEnabled;
   }
 }
