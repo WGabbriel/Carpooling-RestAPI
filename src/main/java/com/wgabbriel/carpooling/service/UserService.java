@@ -35,7 +35,7 @@ public class UserService {
     var userToUpdate = userRepository.findById(id)
         .orElseThrow(() -> new NotFoundException("User not found"));
 
-    if (loggedUser.getId() != userToUpdate.getId()) {
+    if (!loggedUser.getId().equals(userToUpdate.getId())) {
       throw new ActionNotAllowedException("You are not allowed to update this user");
     }
 
@@ -67,7 +67,7 @@ public class UserService {
     var userToDelete = userRepository.findById(id)
         .orElseThrow(() -> new NotFoundException("User not found"));
 
-    if (loggedUser.getId() != userToDelete.getId()) {
+    if (!loggedUser.getId().equals( userToDelete.getId())) {
       throw new ActionNotAllowedException("You are not allowed to delete this user");
     }
 

@@ -58,7 +58,7 @@ public class DriverRideService {
       throw new ActionNotAllowedException("You are not allowed to update this ride");
     }
 
-    if (rideToUpdate.getStatus() == DriverRideStatus.COMPLETED) {
+    if (rideToUpdate.getStatus().equals(DriverRideStatus.COMPLETED)) {
       throw new ActionNotAllowedException("You are not allowed to update this ride");
     }
 
